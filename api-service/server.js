@@ -11,13 +11,12 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Configuración de conexión a PostgreSQL
+// ==============================
+// CONEXIÓN CORRECTA PARA RENDER
+// ==============================
 const pool = new Pool({
-  host: process.env.DB_HOST || 'postgres-db',
-  port: 5432,
-  database: 'crud_db',
-  user: 'postgres',
-  password: 'postgres'
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false } // Requerido por Render
 });
 
 // ---------- RUTAS CRUD DE USUARIOS ----------
@@ -95,4 +94,6 @@ pool.query(`
     nombre TEXT,
     correo TEXT
   )
-`).then(() => console.log('Tabla users lista'));
+`).then(() => console.log('Tabla users lista'))
+  .catch(err => console.error('Error creando tabla:', err));
+
