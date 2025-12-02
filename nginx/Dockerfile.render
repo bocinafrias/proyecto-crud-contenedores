@@ -1,10 +1,11 @@
+# Dockerfile optimizado para Render con Root Directory = "."
+# Este Dockerfile asume que el build context es la raíz del proyecto
+
 FROM node:18-alpine AS build
 
 # Construir frontend
 WORKDIR /app
-# IMPORTANTE: Este Dockerfile asume que el build context es la RAÍZ del proyecto
-# En Render, configura: Root Directory = "." (punto)
-# Si Render no permite ".", ver instrucciones en COMO_CONFIGURAR_BUILD_CONTEXT.md
+# Copiar desde el contexto raíz
 COPY frontend/package*.json ./
 COPY frontend/ ./
 RUN npm install
@@ -13,10 +14,12 @@ RUN npm run build
 # Etapa NGINX
 FROM nginx:alpine
 
-# Copiar nginx.conf (desde nginx/ porque el build context es la raíz)
+# Copiar nginx.conf desde la carpeta nginx/
+# (porque el build context es la raíz)
 COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copiar frontend generado
 COPY --from=build /app/dist/ /usr/share/nginx/html/
 
 EXPOSE 80
+

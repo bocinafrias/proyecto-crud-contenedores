@@ -101,26 +101,42 @@ La aplicación consta de 3 servicios:
    - **Environment**: `Docker`
    - **Dockerfile Path**: `nginx/Dockerfile` (o solo `Dockerfile` si el root es `nginx`)
 4. **IMPORTANTE - Build Context**:
-   - En la configuración avanzada, asegúrate de que el **Build Context** sea la **raíz del proyecto** (no `nginx`)
-   - Esto permite que el Dockerfile acceda a la carpeta `frontend/`
+
+   **Render NO permite cambiar el Build Context desde la UI directamente**, pero hay soluciones:
+
+   **SOLUCIÓN RECOMENDADA: Cambiar Root Directory**
+
+   En lugar de usar `nginx` como Root Directory, usa `.` (punto, raíz del proyecto):
+
+   - **Root Directory**: `.` (punto, significa raíz del proyecto)
+   - **Dockerfile Path**: `nginx/Dockerfile`
+   - Esto hace que el build context sea la raíz, permitiendo acceder a `frontend/`
+
+   **Si esto no funciona, usa la Opción Alternativa abajo ↓**
+
 5. **Variables de Entorno**: No se requieren para Nginx
 6. Haz clic en **"Create Web Service"**
 
-### ⚠️ Nota sobre Build Context en Render
+### ⚠️ Opción Alternativa: Si Root Directory = "." no funciona
 
-Si Render no permite cambiar el build context desde la UI, puedes:
+Si Render no acepta `.` como Root Directory, usa esta configuración:
 
-**Opción A**: Crear un script de build
+1. **Root Directory**: `nginx` (como está)
+2. **Dockerfile Path**: `Dockerfile`
+3. **Modifica el Dockerfile** para que funcione desde el contexto `nginx/`:
 
-- Crear `nginx/build.sh` que copie el frontend antes del build
+   El Dockerfile intentará copiar `../frontend`, pero si falla, necesitarás:
 
-**Opción B**: Ajustar la estructura
+   **Opción A**: Mover temporalmente el frontend
 
-- Mover el frontend dentro de nginx/ temporalmente
+   - Crea una carpeta `nginx/frontend-build/`
+   - Copia el contenido de `frontend/` ahí antes del build
+   - Ajusta el Dockerfile para copiar desde `frontend-build/`
 
-**Opción C**: Usar el build context raíz
+   **Opción B**: Usar un script de build personalizado
 
-- En Render, cuando configures el servicio Nginx, en "Advanced" busca la opción de Build Context y cámbiala a la raíz del proyecto.
+   - Render permite configurar un "Build Command" personalizado
+   - Puedes crear un script que copie el frontend antes del build
 
 ## ✅ Paso 6: Verificar el Despliegue
 
