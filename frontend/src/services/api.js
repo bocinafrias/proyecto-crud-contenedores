@@ -1,8 +1,9 @@
-const API_URL = 'https://proyecto-crud-contenedores.onrender.com/api/users';
+// Usar ruta relativa para que Nginx haga el proxy
+const API_BASE = '/api/users';
 
 export const getUsers = async () => {
   try {
-    const response = await fetch(API_URL);
+    const response = await fetch(API_BASE);
     if (!response.ok) throw new Error('Error al obtener usuarios');
     return await response.json();
   } catch (error) {
@@ -13,7 +14,7 @@ export const getUsers = async () => {
 
 export const createUser = async (user) => {
   try {
-    const response = await fetch(API_URL, {
+    const response = await fetch(API_BASE, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -30,7 +31,7 @@ export const createUser = async (user) => {
 
 export const updateUser = async (id, user) => {
   try {
-    const response = await fetch(`${API_URL}/${id}`, {
+    const response = await fetch(`${API_BASE}/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -47,7 +48,7 @@ export const updateUser = async (id, user) => {
 
 export const deleteUser = async (id) => {
   try {
-    const response = await fetch(`${API_URL}/${id}`, {
+    const response = await fetch(`${API_BASE}/${id}`, {
       method: 'DELETE',
     });
     if (!response.ok) throw new Error('Error al eliminar usuario');

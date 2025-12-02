@@ -1,7 +1,9 @@
 services:
 
   nginx-gateway:
-    build: ./nginx
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
     ports:
       - "80:80"
     depends_on:
