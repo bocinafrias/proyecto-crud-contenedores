@@ -4,10 +4,20 @@ const API_BASE = '/api/users';
 export const getUsers = async () => {
   try {
     const response = await fetch(API_BASE);
-    if (!response.ok) throw new Error('Error al obtener usuarios');
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ error: response.statusText }));
+      console.error('Error del servidor (GET):', {
+        status: response.status,
+        statusText: response.statusText,
+        error: errorData
+      });
+      throw new Error(errorData.error || `Error ${response.status}: ${response.statusText}`);
+    }
+    
     return await response.json();
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error al obtener usuarios:', error);
     throw error;
   }
 };
