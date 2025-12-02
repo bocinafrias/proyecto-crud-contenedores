@@ -4,13 +4,13 @@ FROM node:18-alpine
 # Carpeta de trabajo dentro del contenedor
 WORKDIR /app
 
-# Copiar archivos de dependencias
-COPY package*.json ./
+# Copiar primero package.json y package-lock.json
+COPY package.json package-lock.json* ./
 
 # Instalar dependencias
 RUN npm install --production
 
-# Copiar todo el código
+# Copiar todo el código restante
 COPY . .
 
 # Exponer puerto interno
