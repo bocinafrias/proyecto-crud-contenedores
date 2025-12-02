@@ -32,12 +32,14 @@ function App() {
     setLoading(true);
     setError(null);
     try {
+      console.log('Creando usuario:', userData);
       await createUser(userData);
       await loadUsers();
       setEditingUser(null);
     } catch (err) {
-      setError('Error al crear usuario. Por favor, intenta de nuevo.');
-      console.error(err);
+      const errorMessage = err.message || 'Error al crear usuario. Por favor, intenta de nuevo.';
+      setError(errorMessage);
+      console.error('Error completo:', err);
     } finally {
       setLoading(false);
     }

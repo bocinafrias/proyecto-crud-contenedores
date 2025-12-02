@@ -21,10 +21,16 @@ export const createUser = async (user) => {
       },
       body: JSON.stringify(user),
     });
-    if (!response.ok) throw new Error('Error al crear usuario');
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ error: response.statusText }));
+      console.error('Error del servidor:', errorData);
+      throw new Error(errorData.error || `Error ${response.status}: ${response.statusText}`);
+    }
+    
     return await response.json();
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error al crear usuario:', error);
     throw error;
   }
 };
